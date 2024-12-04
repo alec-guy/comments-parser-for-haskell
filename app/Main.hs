@@ -11,6 +11,7 @@ import Control.Monad.Combinators
 import Control.Monad (void)
 
 
+
 -------------------------------------------------------
 main :: IO ()
 main = do 
@@ -24,11 +25,11 @@ main = do
                      putStrLn "Parsing contents"
                      parseContents fileContents
  putStrLn "Writing file"
- writeFile (filename ++ "Comments.txt") (show haskellComments)
+ writeFile ((takeWhile (/= '.') filename) ++ "Comments.txt") (show haskellComments)
 
  
 ------------------------------------------------
-parseContents :: String -> IO [Maybe HaskellComment]
+parseContents :: String -> IO [HaskellComment]
 parseContents s = do 
     case parse (parseHaskellComments)  "input2.txt" s of 
      Left e -> do 
@@ -73,14 +74,14 @@ data HaskellComment = S SingleLineComment
 newtype Symbol  = Symbol String deriving (Show, Eq)
 newtype Comment = Comment String deriving (Show, Eq)
 
-parseHaskellComments :: Parser [Maybe HaskellComment] 
+parseHaskellComments :: Parser [HaskellComment] 
 parseHaskellComments = many (Mega.try haskellComment)
     where haskellComment = do 
              spaceParser
              comment <- (Mega.try parseHaskellSingle) <|> (Mega.try parseHaskellMulti)
              return comment 
     
-parseHaskellSingle :: Parser (Maybe HaskellComment)
+parseHaskellSingle :: Parser (HaskellComment)
 parseHaskellSingle = do 
     spaceParser
     e <- observing (skipManyTill anySingle (string "--"))
@@ -88,9 +89,9 @@ parseHaskellSingle = do
         Left e   -> parseError e
         Right _  -> do 
                      st <- manyTill (anySingle) newline
-                     return $ Just (S (SingleLineComment (Symbol "--") (Comment st)))
+                     return $ S (SingleLineComment (Symbol "--") (Comment st))
 
-parseHaskellMulti :: Parser (Maybe HaskellComment)
+parseHaskellMulti :: Parser (HaskellComment)
 parseHaskellMulti = do 
     spaceParser
     e <- observing (skipManyTill anySingle (string "{-"))
@@ -98,4 +99,4 @@ parseHaskellMulti = do
         Left e -> parseError e 
         Right _ -> do 
                     st <- manyTill (anySingle) (string "-}")
-                    return $ Just (M (MultiLineComment (Symbol "{--}") (Comment st)))
+                    return $ (M (MultiLineComment (Symbol "{--}") (Comment st)))
