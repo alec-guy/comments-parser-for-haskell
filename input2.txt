@@ -1,7 +1,0 @@
-This is a file
-as you can see, 
-it might be different than a haskell one
-for some weird reason. 
--- this is a comment
--- as you can see 
-{- This is also a comment -}

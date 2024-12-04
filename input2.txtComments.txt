@@ -1,1 +1,0 @@
-[Just (S (SingleLineComment (Symbol "--") (Comment " this is a comment"))),Just (S (SingleLineComment (Symbol "--") (Comment " as you can see "))),Just (M (MultiLineComment (Symbol "{--}") (Comment " This is also a comment ")))]

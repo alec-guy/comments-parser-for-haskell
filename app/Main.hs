@@ -30,7 +30,7 @@ main = do
 ------------------------------------------------
 parseContents :: String -> IO [Maybe HaskellComment]
 parseContents s = do 
-    case parse (parseHaskellComments <* eof)  "input2.txt" s of 
+    case parse (parseHaskellComments)  "input2.txt" s of 
      Left e -> do 
         putStrLn "parsing error"
         putStrLn $ errorBundlePretty $ e 
